@@ -1,9 +1,9 @@
 try:
     import urlparse
-    from urllib import quote_plus
+    from urllib import quote, quote_plus
 except ImportError:
     from urllib import parse as urlparse
-    from urllib.parse import quote_plus
+    from urllib.parse import quote, quote_plus
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import os
@@ -301,13 +301,15 @@ class LeafDataset(object):
                                 url += s.get("suffix")
                             # ISO like services need additional parameters
                             if s.get('name') in ["iso", "ncml", "uddc"]:
-                                url += "?dataset=%s&catalog=%s" % (self.id, quote_plus(self.catalog_url))
+                                #url += "?dataset=%s&catalog=%s" % (self.id, quote_plus(self.catalog_url))
+                                url += "?catalog=%s" % (quote(self.catalog_url))
                             self.services.append( {'name' : s.get('name'), 'service' : s.get('serviceType'), 'url' : url } )
                     else:
                         url = construct_url(dataset_url, service.get('base')) + dataset.get("urlPath") + service.get("suffix", "")
                         # ISO like services need additional parameters
                         if service.get('name') in ["iso", "ncml", "uddc"]:
-                            url += "?dataset=%s&catalog=%s" % (self.id, quote_plus(self.catalog_url))
+                            #url += "?dataset=%s&catalog=%s" % (self.id, quote_plus(self.catalog_url))
+                            url += "?catalog=%s" % (quote(self.catalog_url))
                         self.services.append( {'name' : service.get('name'), 'service' : service.get('serviceType'), 'url' : url } )
             except BaseException as e:
                 logger.exception('Could not process {}. {}.'.format(dataset_url, e))
